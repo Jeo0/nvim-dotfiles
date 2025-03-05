@@ -30,3 +30,7 @@ map("n", "<C-Left>", "<C-w><")
 map("n", "<C-Right>", "<C-w>>")
 map("n", "<C-Up>", "<C-w>+")
 map("n", "<C-Down>", "<C-w>-")
+
+-- NeoTree
+map("n", "<leader>e", "<CMD>Neotree toggle<CR>")
+map("n", "<leader>r", "<CMD>Neotree focus<CR>")
