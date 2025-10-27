@@ -6,13 +6,12 @@
 -- <C-i> 	tab
 -- <C-[>	esc
 -- <C-m>	enter
-
 -- leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- ctrl backspace or <c-H> delete word
-vim.api.nvim_set_keymap('i', '<C-H>', '<C-W>', {noremap=true})
+vim.api.nvim_set_keymap('i', '<C-BS>', '<C-W>', {noremap=true})
 
 
 local function map(mode, lhs, rhs)
