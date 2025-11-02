@@ -6,7 +6,6 @@
 -- <C-i> 	tab
 -- <C-[>	esc
 -- <C-m>	enter
-
 -- leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

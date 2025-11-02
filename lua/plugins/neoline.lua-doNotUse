@@ -1,0 +1,4 @@
+return {
+
+    'adelarsq/neoline.vim'
+}
