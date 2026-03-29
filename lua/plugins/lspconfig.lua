@@ -1,19 +1,27 @@
-
 return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
-        { "folke/neodev.nvim", opts = {} },
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
     },
     config = function()
-        local nvim_lsp = require("lspconfig")
+        local lspconfig = require("lspconfig")
         local mason_lspconfig = require("mason-lspconfig")
+        local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-        local protocol = require("vim.lsp.protocol")
-
+        -- 1. Create the on_attach function to fix K and gd
         local on_attach = function(client, bufnr)
-            -- format on save
+            local opts = { buffer = bufnr, silent = true }
+            
+            -- KEYMAPS FOR NAVIGATION
+            vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)           -- Hover docs
+            vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)    -- Go to definition
+            vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)   -- Go to declaration
+            vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)-- Go to implementation
+            
+            -- Format on save logic
             if client.server_capabilities.documentFormattingProvider then
                 vim.api.nvim_create_autocmd("BufWritePre", {
                     group = vim.api.nvim_create_augroup("Format", { clear = true }),
@@ -25,35 +33,24 @@ return {
             end
         end
 
-        local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
+        -- 2. Setup Mason-LSPConfig Handlers
         mason_lspconfig.setup_handlers({
-            function(server)
-                nvim_lsp[server].setup({
+            -- Default handler
+            function(server_name)
+                lspconfig[server_name].setup({
                     capabilities = capabilities,
+                    on_attach = on_attach,
                 })
             end,
-            ----------------------------------------------------
+            
+            -- Specific overrides (if needed)
             ["clangd"] = function()
-                nvim_lsp["clangd"].setup({
-                    on_attach = on_attach,
+                lspconfig.clangd.setup({
                     capabilities = capabilities,
+                    on_attach = on_attach,
+                    -- Add specific clangd flags here if you need them
                 })
             end,
-            ["gdtoolkit"] = function()
-                nvim_lsp["gdtoolkit"].setup({
-                    on_attach = on_attach,
-                    capabilities = capabilities,
-                })
-            end,
-            ["pyright"] = function()
-                nvim_lsp["pyright"].setup({
-                    on_attach = on_attach,
-                    capabilities = capabilities,
-                })
-            end,
-            ----------------------------------------------------
-
         })
     end,
 }

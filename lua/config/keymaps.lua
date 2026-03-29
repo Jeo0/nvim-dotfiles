@@ -13,7 +13,6 @@ vim.g.maplocalleader = " "
 -- ctrl backspace or <c-H> delete word
 vim.api.nvim_set_keymap('i', '<C-BS>', '<C-W>', {noremap=true})
 
-
 local function map(mode, lhs, rhs)
     vim.keymap.set(mode, lhs, rhs, { silent = true })
 end
@@ -40,3 +39,26 @@ map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Fuzzy find rece
 map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find string in cwd" })
 map("n", "<leader>fs", "<cmd>Telescope git_status<cr>", { desc = "Find string under cursor in cwd" })
 map("n", "<leader>fc", "<cmd>Telescope git commits<cr>", { desc = "Find todos" })
+
+-- copy all
+map("n", "<leader>c", "ggVGy", { desc = "copy all" })
+
+-- search the word under the cursor (yank it)
+-- map("n", "<leader>yw", "bvey<Esc>/<C-V><CR>", {desc = "word search under cursor"})
+-- explanation: 
+-- viw → select inner word
+-- y → yank
+-- / → search
+-- <C-r>" → insert contents of the unnamed register
+-- <CR> → run search
+vim.keymap.set("n", "<leader>yw", "viwy/<C-r>\"<CR>", {
+  desc = "yank + search word under cursor"
+})
+
+-- toggle comment 
+map("n", "<C-/>", "gcc", { remap = true, desc = "Toggle comment line" })
+-- map("n", "<C-.>", "gcc", { remap = true, desc = "Toggle comment line" })
+
+-- Toggle comment for the visual selection
+map("v", "<C-/>", "gc", { remap = true, desc = "Toggle comment selection" })
+-- map("v", "<C-.>", "gc", { remap = true, desc = "Toggle comment selection" })
