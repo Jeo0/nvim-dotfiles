@@ -10,6 +10,10 @@
 local global = vim.g
 local o = vim.opt
 
+-- Leader must be set BEFORE lazy.nvim is loaded
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 -- Editor options
 
 

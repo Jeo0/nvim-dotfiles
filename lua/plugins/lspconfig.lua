@@ -1,6 +1,7 @@
 return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    cmd = { "LspInfo", "LspInstall", "LspUninstall" },
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
         "williamboman/mason.nvim",
@@ -9,7 +10,11 @@ return {
     config = function()
         local lspconfig = require("lspconfig")
         local mason_lspconfig = require("mason-lspconfig")
+        require("mason").setup()
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+        -- Mandatory: setup mason-lspconfig before handlers
+        mason_lspconfig.setup()
 
         -- 1. Create the on_attach function to fix K and gd
         local on_attach = function(client, bufnr)

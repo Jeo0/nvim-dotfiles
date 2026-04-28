@@ -10,16 +10,8 @@ end
 -- KEYMAPS
 ---------------------------------------
 
--- Leader
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
 -- ctrl backspace or <c-H> delete word
 vim.api.nvim_set_keymap('i', '<C-BS>', '<C-W>', {noremap=true})
-
-local function map(mode, lhs, rhs)
-    vim.keymap.set(mode, lhs, rhs, { silent = true })
-end
 
 -- Window Navigation
 map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
@@ -48,8 +40,6 @@ map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find string in cw
 map("n", "<leader>fs", "<cmd>Telescope git_status<cr>", { desc = "Find string under cursor in cwd" })
 map("n", "<leader>fc", "<cmd>Telescope git commits<cr>", { desc = "Find todos" })
 
--- copy all
-map("n", "<leader>c", "ggVGy", { desc = "copy all" })
 
 -- search the word under the cursor (yank it)
 -- map("n", "<leader>yw", "bvey<Esc>/<C-V><CR>", {desc = "word search under cursor"})
@@ -72,8 +62,8 @@ map("v", "<C-/>", "gc", { remap = true, desc = "Toggle comment selection" })
 -- map("v", "<C-.>", "gc", { remap = true, desc = "Toggle comment selection" })
 
 
--- Copy Operations
-map("n", "<leader>c", 'ggVG"+y', { desc = "Copy entire file" })
+-- copy all
+map("n", "<leader>c", "ggVGy", { desc = "copy all" })
 
 -- AI COPY 
 -- grab lines, wrap them, and copy to system clipboard
