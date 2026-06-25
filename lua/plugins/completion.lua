@@ -17,6 +17,10 @@ return {
         require("luasnip.loaders.from_vscode").lazy_load()
 
         cmp.setup({
+            window = {
+                completion = cmp.config.window.bordered(),
+                documentation = cmp.config.window.bordered(),
+            },
             snippet = {
                 expand = function(args)
                     luasnip.lsp_expand(args.body)
@@ -50,16 +54,27 @@ return {
                     end
                 end, { "i", "s" }),
             }),
-            sources = cmp.config.sources({
-                { name = "nvim_lsp" }, -- LSP completion
-                { name = "luasnip" }, -- Snippets
-                { name = "buffer" },   -- Current buffer words
-                { name = "path" },     -- File system paths
-            }),
+            sources = cmp.config.sources(
+                {
+                    { name = "nvim_lsp", priority = 1000 },
+                    { name = "luasnip",  priority = 750 },
+                },
+                {
+                    { name = "buffer",   priority = 500 },
+                    { name = "path",     priority = 250 },
+                }
+            ),
             formatting = {
                 format = lspkind.cmp_format({
+                    mode = "symbol_text",
                     maxwidth = 50,
                     ellipsis_char = "...",
+                    menu = {
+                        nvim_lsp = "[LSP]",
+                        luasnip  = "[Snippet]",
+                        buffer   = "[Buffer]",
+                        path     = "[Path]",
+                    },
                 }),
             },
         })
