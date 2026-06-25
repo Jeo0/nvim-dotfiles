@@ -1,7 +1,7 @@
 return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
-    cmd = { "LspInstall", "LspUninstall" },
+    cmd = { "LspInfo", "LspInstall", "LspUninstall" },
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
         "williamboman/mason.nvim",
@@ -12,24 +12,26 @@ return {
         local lspconfig = require("lspconfig")
         local mason_lspconfig = require("mason-lspconfig")
 
-        -- Rounded borders on ALL LSP floating windows (hover, signature, diagnostics).
-        -- vim.lsp.with() was REMOVED in Nvim 0.12; vim.o.winborder is the replacement.
-        vim.o.winborder = "rounded"
-
-        -- automatic_enable = false: mason-lspconfig v2 auto-enables every installed server
-        -- by default. Combined with our lspconfig.X.setup() calls below, that spawns a
-        -- duplicate client for each server (visible as two lua_ls instances in :checkhealth).
-        -- Turning it off makes mason only handle installation; we control enabling ourselves.
+        -- mason-lspconfig v2: setup_handlers() is GONE.
+        -- v2 now auto-enables installed servers via vim.lsp.enable() by default.
+        -- Just list what to install; configure each server directly below.
         mason_lspconfig.setup({
             ensure_installed = {
                 "clangd",   -- C / C++
                 "pyright",  -- Python
-                "lua_ls",   -- Lua (for editing your own config)
+                "lua_ls",   -- Lua (useful for editing your own config)
             },
-            automatic_enable = false,
         })
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+        -- Rounded borders on hover / signature windows
+        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+            vim.lsp.handlers.hover, { border = "rounded" }
+        )
+        vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+            vim.lsp.handlers.signature_help, { border = "rounded" }
+        )
 
         local formatting_augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
 
@@ -38,7 +40,7 @@ return {
 
             vim.keymap.set('n', 'K',          vim.lsp.buf.hover,          opts)
             vim.keymap.set('n', 'gd',         vim.lsp.buf.definition,     opts)
-            vim.keymap.set('n', '<C-]>',      vim.lsp.buf.definition,     opts) -- old ctags key → LSP
+            vim.keymap.set('n', '<C-]>',      vim.lsp.buf.definition,     opts) -- remap ctags key → LSP
             vim.keymap.set('n', 'gD',         vim.lsp.buf.declaration,    opts)
             vim.keymap.set('n', 'gi',         vim.lsp.buf.implementation, opts)
             vim.keymap.set('n', 'gr',         vim.lsp.buf.references,     opts)
@@ -63,9 +65,10 @@ return {
         end
 
         -- ── C / C++ ────────────────────────────────────────────────────────────
-        -- Needs compile_commands.json at project root for cross-file navigation.
-        -- Generate: cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-        --       or: bear -- make
+        -- clangd needs a compile_commands.json at the project root for reliable
+        -- cross-file navigation. Generate with:
+        --   cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+        --   bear -- make          (for non-CMake projects)
         lspconfig.clangd.setup({
             capabilities = capabilities,
             on_attach = on_attach,
@@ -83,7 +86,7 @@ return {
             on_attach = on_attach,
         })
 
-        -- ── Lua ────────────────────────────────────────────────────────────────
+        -- ── Lua (your own config files) ────────────────────────────────────────
         lspconfig.lua_ls.setup({
             capabilities = capabilities,
             on_attach = on_attach,
@@ -94,9 +97,12 @@ return {
             },
         })
 
-        -- ── Godot GDScript ─────────────────────────────────────────────────────
-        -- Not managed by Mason; the LSP lives inside Godot (port 6005).
-        -- Godot must be open with LSP enabled in Editor Settings → Network → Language Server.
+        -- ── Godot / GDScript ───────────────────────────────────────────────────
+        -- NOT managed by Mason — the LSP lives inside Godot itself (port 6005).
+        -- Requirements:
+        --   1. Godot must be open.
+        --   2. Editor → Editor Settings → Network → Language Server
+        --      → "Use Built-in Server" ON, then restart Godot.
         lspconfig.gdscript.setup({
             capabilities = capabilities,
             on_attach = on_attach,
