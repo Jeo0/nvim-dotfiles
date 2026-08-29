@@ -22,6 +22,7 @@ o.relativenumber = true -- Show the line number relative to the line with the cu
 o.clipboard = "unnamedplus" -- uses the clipboard register for all operations except yank.
 o.syntax = "on" -- When this option is set, the syntax with this name is loaded.
 o.autoindent = true -- Copy indent from current line when starting a new line.
+o.smartindent = true -- Add extra indent after lines ending in '{', ':', etc. (fallback for filetypes without a Treesitter/filetype indent plugin)
 o.cursorline = true -- Highlight the screen line of the cursor with CursorLine.
 o.expandtab = true -- In Insert mode: Use the appropriate number of spaces to insert a <Tab>.
 o.shiftwidth = 4 -- Number of spaces to use for each step of (auto)indent.

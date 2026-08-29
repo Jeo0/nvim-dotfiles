@@ -1,6 +1,7 @@
 return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    cmd = { "LspInstall", "LspUninstall" },
     dependencies = {
         "hrsh7th/cmp-nvim-lsp",
         "williamboman/mason.nvim",
@@ -24,9 +25,6 @@ return {
                 "lua_ls",  -- Lua (for editing your own config)
             },
         })
-        -- Note: :LspInstall / :LspUninstall are mason-lspconfig's commands, not
-        -- nvim-lspconfig's — they're already available once mason-lspconfig loads
-        -- above, no separate `cmd` trigger needed on this plugin spec for them.
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 

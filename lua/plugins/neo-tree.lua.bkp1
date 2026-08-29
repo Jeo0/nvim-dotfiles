@@ -1,16 +1,10 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
-  cmd = "Neotree",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
     "MunifTanjim/nui.nvim",
     -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
-  },
-  -- lazy.nvim only calls require("neo-tree").setup(opts) automatically when
-  -- an `opts` key is present (even empty) — without it setup() never ran,
-  -- and Neo-tree's config table was never populated. Add real options here
-  -- as you want to customize it.
-  opts = {},
+  }
 }
